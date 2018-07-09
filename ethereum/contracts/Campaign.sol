@@ -1,6 +1,7 @@
 pragma solidity ^0.4.24;
 
-contract CampaignFactory{
+
+contract CampaignFactory {
     
     address[] public deployedCampaigns;
     
@@ -54,14 +55,14 @@ contract Campaign{
     
     function createRequest (string _description, address _recipient, uint _value)public onlyManager {
         
-        Request memory req =Request({
-            description:_description,
-            recipient:_recipient,
-            value:_value,
-            complete:false,
-            approvalCount:0
-        });
-        requests.push(req);
+        Request memory req = Request({
+        description:_description,
+        recipient:_recipient,
+        value:_value,
+        complete:false,
+        approvalCount:0
+                });
+                requests.push(req);
         
     }
     
@@ -81,6 +82,22 @@ contract Campaign{
         require(request.approvalCount > approversCount / 2);
         request.recipient.transfer(request.value);
         request.complete = true;
+    }
+
+    function getSummary() public view returns(uint , uint ,uint ,uint ,address)
+    {
+        return(
+            minimumContribution,
+            address(this).balance,
+            requests.length,
+            approversCount,
+            manager
+        );
+    }
+
+    function getRequestsCount () public view returns (uint)
+    {
+        return requests.length;
     }
     
     function kill () public onlyManager{
